@@ -23,8 +23,13 @@ while(True): # process individual frames of video
     # Get and draw largest contour (one around hand) and hull around hand
     largest_contour = max(contours, key =  lambda x: cv2.contourArea(x))
     hull = cv2.convexHull(largest_contour)
+    # Calculate center of contour and draw circle at centroid
+    moment = cv2.moments(largest_contour)
+    cX = int(moment['m10']/moment['m00'])
+    cY = int(moment['m01']/moment['m00'])
     cv2.drawContours(img_roi, [largest_contour], 0, (0, 255, 0), 2)
     cv2.drawContours(img_roi, [hull], 0, (0, 0, 255), 2)
+    cv2.circle(img_roi, (cX, cY), 5, (0, 255, 255), 2)
 
     cv2.imshow('Image', img)
 
