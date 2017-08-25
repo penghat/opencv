@@ -30,6 +30,21 @@ while(True): # process individual frames of video
     cv2.drawContours(img_roi, [largest_contour], 0, (0, 255, 0), 2)
     cv2.drawContours(img_roi, [hull], 0, (0, 0, 255), 2)
     cv2.circle(img_roi, (cX, cY), 5, (0, 255, 255), 2)
+    cv2.circle(img_roi, (cX, cY), 50, (0, 128, 255), 2)
+
+    # Get defects for tracking fingertips
+    hull2 = cv2.convexHull(largest_contour, returnPoints = False)
+    defects = cv2.convexityDefects(largest_contour, hull2)
+    for i in range(defects.shape[0]):
+        s, e, f, d = defects[i, 0]
+        start = tuple(largest_contour[s][0]) # tip
+        end = tuple(largest_contour[e][0]) # between
+        far = tuple(largest_contour[f][0]) # tip
+
+
+        cv2.circle(img_roi, end, 5, (255, 51, 153), 3)
+        cv2.circle(img_roi, far, 5, (255, 0, 0), 3)
+        cv2.circle(img_roi, start, 5, (0, 0, 255), 3)
 
     cv2.imshow('Image', img)
 
