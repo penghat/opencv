@@ -35,16 +35,32 @@ while(True): # process individual frames of video
     # Get defects for tracking fingertips
     hull2 = cv2.convexHull(largest_contour, returnPoints = False)
     defects = cv2.convexityDefects(largest_contour, hull2)
+    count = 0 # Track total number of fingertips registered
     for i in range(defects.shape[0]):
         s, e, f, d = defects[i, 0]
         start = tuple(largest_contour[s][0]) # tip
         end = tuple(largest_contour[e][0]) # between
         far = tuple(largest_contour[f][0]) # tip
 
+        # Find angle of finger using defects and cosine rule (given 3 sides)
+        sidex = math.sqrt(math.pow((start[0] - end[0]), 2)
+                             + math.pow((start[1] - end[1]), 2))
+        sidey = math.sqrt(math.pow((start[0] - far[0]), 2)
+                             + math.pow((start[1] - far[1]), 2))
+        sidez = math.sqrt(math.pow((far[0] - end[0]), 2)
+                             + math.pow((far[1] - end[1]), 2))
+        arc_angle = ((math.pow(sidex, 2) - math.pow(sidey, 2)
+                      - math.pow(sidez, 2)) / (-2 * sidey * sidez))
+        angle = math.acos(arc_angle) * 180 / math.pi # Calculate & convert
 
-        cv2.circle(img_roi, end, 5, (255, 51, 153), 3)
-        cv2.circle(img_roi, far, 5, (255, 0, 0), 3)
-        cv2.circle(img_roi, start, 5, (0, 0, 255), 3)
+        # Find angle between centroid and fingertip to further filter
+        center_angle = math.atan2(cY - end[1], cX - end[0]) * 180 / math.pi
+
+        # Fingertip must be a certain distance from centroid (filtering)
+        (x, y, w, h) = cv2.boundingRect(largest_contour)
+        if angle <= 80 and sidey > 0.25 * h and center_angle <= 150:
+            count += 1 # Increment number of fingertips
+            cv2.circle(img_roi, end, 5, (0, 0, 255), 3) # Draw on fingertip
 
     cv2.imshow('Image', img)
 
