@@ -70,15 +70,16 @@ while(True): # process individual frames of video
 
         finger_count.append(count) # Add current count to list
 
-        # Determine the actual # of fingers being held up
-        if finger_frames == 100: # Only operate every 100 frames (arbitrary)
+        # Determine the actual number of fingers being held up
+        if finger_frames == 500: # Only operate every 200 frames (arbitrary)
 
-            # Number of fingers = average of all recordings
-            # Done to remove false positives/erratic counting
-            average = math.ceil(sum(finger_count)/len(finger_count))
-            print(average)
-            finger_frames = 0
-            del(finger_count[:])
+            arr = np.array(finger_count) # convert to numpy array
+            # Number of finger equals the most frequent value in array
+            # Idea is that correct number should appear most often
+            num_fingers = np.bincount(arr).argmax()
+            print(num_fingers) # Print number of fingers
+            finger_frames = 0  # Reset counter of frames
+            del(finger_count[:]) # Reset array
 
         finger_frames += 1
 
