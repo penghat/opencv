@@ -1,4 +1,17 @@
 <?xml version="1.0"?>
+
+<!--
+Ananth Penghat
+September 2017
+
+This haar cascade was built with over 2000 images to detect an index finger
+pointing upwards. The opencv_createsamples and opencv_traincascade methods
+of the OpenCV module were used to create and train this haar cascade.
+
+False positives can be limited if arguments to detectMultiScale() are 
+appropriate.
+-->
+
 <opencv_storage>
 <cascade>
   <stageType>BOOST</stageType>
