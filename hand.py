@@ -2,7 +2,11 @@ import cv2
 import numpy as np
 import math
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(0) # Capture from primary webcam
+
+finger_count = [] # Holds the number of fingers raised
+finger_frames = 0  # Counts the number of times loop has run
+
 
 while(True): # process individual frames of video
     ret, img = cap.read()
@@ -33,6 +37,7 @@ while(True): # process individual frames of video
     cv2.circle(img_roi, (cX, cY), 5, (0, 255, 255), 2)
     cv2.circle(img_roi, (cX, cY), 50, (0, 128, 255), 2)
 
+
     # Get defects for tracking fingertips
     hull2 = cv2.convexHull(largest_contour, returnPoints = False)
     defects = cv2.convexityDefects(largest_contour, hull2)
@@ -45,11 +50,11 @@ while(True): # process individual frames of video
 
         # Find angle of finger using defects and cosine rule (given 3 sides)
         sidex = math.sqrt(math.pow((start[0] - end[0]), 2)
-                             + math.pow((start[1] - end[1]), 2))
+                          + math.pow((start[1] - end[1]), 2))
         sidey = math.sqrt(math.pow((start[0] - far[0]), 2)
-                             + math.pow((start[1] - far[1]), 2))
+                          + math.pow((start[1] - far[1]), 2))
         sidez = math.sqrt(math.pow((far[0] - end[0]), 2)
-                             + math.pow((far[1] - end[1]), 2))
+                          + math.pow((far[1] - end[1]), 2))
         arc_angle = ((math.pow(sidex, 2) - math.pow(sidey, 2)
                       - math.pow(sidez, 2)) / (-2 * sidey * sidez))
         angle = math.acos(arc_angle) * 180 / math.pi # Calculate & convert
@@ -62,6 +67,20 @@ while(True): # process individual frames of video
         if angle <= 80 and sidey > 0.25 * h and center_angle <= 150:
             count += 1 # Increment number of fingertips
             cv2.circle(img_roi, end, 5, (0, 0, 255), 3) # Draw on fingertip
+
+        finger_count.append(count) # Add current count to list
+
+        # Determine the actual # of fingers being held up
+        if finger_frames == 100: # Only operate every 100 frames (arbitrary)
+
+            # Number of fingers = average of all recordings
+            # Done to remove false positives/erratic counting
+            average = math.ceil(sum(finger_count)/len(finger_count))
+            print(average)
+            finger_frames = 0
+            del(finger_count[:])
+
+        finger_frames += 1
 
     cv2.imshow('Image', img)
 
