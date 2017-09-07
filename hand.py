@@ -109,7 +109,7 @@ def detect_hand():
             finger_count.append(count) # Add current count to list
 
             # Determine the actual number of fingers being held up
-            if finger_frames == 500: # Only operate every 'x' frames
+            if finger_frames == 200: # Only operate every 'x' frames
                 arr = np.array(finger_count) # convert to numpy array
                 # Number of finger equals the most frequent value in array
                 # Idea is that correct number should appear most often
