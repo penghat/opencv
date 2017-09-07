@@ -1,8 +1,25 @@
-import cv2
-import numpy as np
-import math
+import cv2, numpy as np, math
+import pygame, random, sys, time
+from pygame.locals import *
+
+# Colors of tiles/gameboard
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+GREEN = (0, 255, 0)
+YELLOW = (255, 255, 0)
+BLACK = (0, 0, 0)
+# Colors for when tile is selected
+FLASH_RED = (255, 102, 102)
+FLASH_BLUE = (102, 102, 255)
+FLASH_GREEN = (102, 255, 102)
+FLASH_YELLOW = (255, 255, 102)
+
 
 def detect_hand():
+
+    pygame.init()
+    game_board = pygame.display.set_mode((420, 420)) # Create pygame board
+    pygame.display.set_caption("Computer Vision Simon")
 
     finger_count = [] # Holds the number of fingers raised
     finger_frames = 0  # Counts the number of times loop has run
@@ -11,6 +28,11 @@ def detect_hand():
 
     while(True): # process individual frames of video
         ret, img = cap.read()
+
+        for event in pygame.event.get(): # Pygame checking
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
 
         # Indicate where to place hand & make that place a region of interest
         cv2.rectangle(img, (100, 50), (550, 550), (255, 0, 0), 0)
@@ -91,8 +113,8 @@ def detect_hand():
         if k == 27:
             break
 
+    pygame.display.update()
     cap.release()
     cv2.destroyAllWindows()
-
 
 detect_hand()
