@@ -107,7 +107,7 @@ def detect_hand():
 
             finger_frames += 1
 
-        cv2.imshow('Image', img)
+        cv2.imshow('Image', img_roi)
 
         k = cv2.waitKey(30) & 0xFF
         if k == 27:
