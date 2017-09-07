@@ -21,6 +21,12 @@ def detect_hand():
     game_board = pygame.display.set_mode((420, 420)) # Create pygame board
     pygame.display.set_caption("Computer Vision Simon")
 
+    # Create the Simon green, red, blue, and yellow tiles
+    g_tile = pygame.Rect(0, 0, 200, 200)
+    r_tile = pygame.Rect(220, 0, 200, 200)
+    b_tile = pygame.Rect(220, 220, 200, 200)
+    y_tile = pygame.Rect(0, 220, 200, 200)
+
     finger_count = [] # Holds the number of fingers raised
     finger_frames = 0  # Counts the number of times loop has run
 
@@ -28,6 +34,13 @@ def detect_hand():
 
     while(True): # process individual frames of video
         ret, img = cap.read()
+
+        # Coloring of pygame board
+        game_board.fill(BLACK)
+        pygame.draw.rect(game_board, GREEN, g_tile)
+        pygame.draw.rect(game_board, RED, r_tile)
+        pygame.draw.rect(game_board, BLUE, b_tile)
+        pygame.draw.rect(game_board, YELLOW, y_tile)
 
         for event in pygame.event.get(): # Pygame checking
             if event.type == pygame.QUIT:
@@ -107,13 +120,14 @@ def detect_hand():
 
             finger_frames += 1
 
+            pygame.display.flip()
+
         cv2.imshow('Image', img_roi)
 
         k = cv2.waitKey(30) & 0xFF
         if k == 27:
             break
 
-    pygame.display.update()
     cap.release()
     cv2.destroyAllWindows()
 
