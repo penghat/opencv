@@ -1,51 +1,14 @@
 import cv2, numpy as np, math
-import pygame, random, sys, time
-from pygame.locals import *
-
-# Colors of tiles/gameboard
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
-GREEN = (0, 255, 0)
-YELLOW = (255, 255, 0)
-BLACK = (0, 0, 0)
-# Colors for when tile is selected
-FLASH_RED = (255, 102, 102)
-FLASH_BLUE = (102, 102, 255)
-FLASH_GREEN = (102, 255, 102)
-FLASH_YELLOW = (255, 255, 102)
-
 
 def detect_hand():
-
-    pygame.init()
-    game_board = pygame.display.set_mode((420, 420)) # Create pygame board
-    pygame.display.set_caption("Computer Vision Simon")
-
-    # Create the Simon green, red, blue, and yellow tiles
-    g_tile = pygame.Rect(0, 0, 200, 200)
-    r_tile = pygame.Rect(220, 0, 200, 200)
-    b_tile = pygame.Rect(220, 220, 200, 200)
-    y_tile = pygame.Rect(0, 220, 200, 200)
 
     finger_count = [] # Holds the number of fingers raised
     finger_frames = 0  # Counts the number of times loop has run
 
     cap = cv2.VideoCapture(0) # Capture from primary webcam
-
+    loop = 0
     while(True): # process individual frames of video
         ret, img = cap.read()
-
-        # Coloring of pygame board
-        game_board.fill(BLACK)
-        pygame.draw.rect(game_board, GREEN, g_tile)
-        pygame.draw.rect(game_board, RED, r_tile)
-        pygame.draw.rect(game_board, BLUE, b_tile)
-        pygame.draw.rect(game_board, YELLOW, y_tile)
-
-        for event in pygame.event.get(): # Pygame checking
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
 
         # Indicate where to place hand & make that place a region of interest
         cv2.rectangle(img, (100, 50), (550, 550), (255, 0, 0), 0)
@@ -109,18 +72,16 @@ def detect_hand():
             finger_count.append(count) # Add current count to list
 
             # Determine the actual number of fingers being held up
-            if finger_frames == 200: # Only operate every 'x' frames
+            if finger_frames == 600: # Only operate every 'x' frames
                 arr = np.array(finger_count) # convert to numpy array
                 # Number of finger equals the most frequent value in array
                 # Idea is that correct number should appear most often
                 num_fingers = np.bincount(arr).argmax()
-                print(num_fingers) # Print number of fingers
+                print(num_fingers)
                 finger_frames = 0  # Reset counter of frames
                 del(finger_count[:]) # Reset array
 
             finger_frames += 1
-
-            pygame.display.flip()
 
         cv2.imshow('Image', img_roi)
 
