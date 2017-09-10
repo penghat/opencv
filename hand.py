@@ -146,10 +146,38 @@ def detect_hand():
 
         if ai_rock == True:
             img[300:500, 950:1150] = rockim
+            if rock == True: # Draw
+                cv2.putText(img, text7, (550, 700), font, 1,
+                            (255, 255, 102), 2, cv2.LINE_AA)
+            elif paper == True: # Win for player
+                cv2.putText(img, text5, (550, 700), font, 1,
+                             (102, 255, 102),  2, cv2.LINE_AA)
+            elif scissor == True: # Loss for player
+                cv2.putText(img, text6, (550, 700), font, 1, (51, 51, 255),
+                            2, cv2.LINE_AA)
         elif ai_paper == True:
             img[300:500, 950:1150] = paperim
+            if paper == True: # Draw
+                cv2.putText(img, text7, (550, 700), font, 1,
+                            (255, 255, 102), 2, cv2.LINE_AA)
+            elif scissor == True: # Win for player
+                cv2.putText(img, text5, (550, 700), font, 1,
+                             (102, 255, 102),  2, cv2.LINE_AA)
+            elif rock == True: # Loss for player
+                cv2.putText(img, text6, (550, 700), font, 1, (51, 51, 255),
+                            2, cv2.LINE_AA)
         elif ai_scissor == True:
             img[300:500, 950:1150] = scissorim
+            if scissor == True: # Draw
+                cv2.putText(img, text7, (550, 700), font, 1,
+                            (255, 255, 102), 2, cv2.LINE_AA)
+            elif rock == True: # Win for player
+                cv2.putText(img, text5, (550, 700), font, 1,
+                             (102, 255, 102),  2, cv2.LINE_AA)
+            elif paper == True: # Loss for player
+                cv2.putText(img, text6, (550, 700), font, 1, (51, 51, 255),
+                            2, cv2.LINE_AA)
+
 
         cv2.imshow('Image', img)
 
