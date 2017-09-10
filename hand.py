@@ -11,6 +11,13 @@ def detect_hand():
 
         ret, img = cap.read()
 
+        text = "Welcome to Computer Vision Rock-Paper-Scissors!"
+        text2 = "Rock (0 fingers), paper (5 fingers), scissors (2 fingers)"
+        font = cv2.FONT_HERSHEY_DUPLEX
+        color = (255, 153, 255)
+        cv2.putText(img, text, (270, 600), font, 0.8, color, 2, cv2.LINE_AA)
+        cv2.putText(img, text2, (250, 650), font, 0.8, color, 2, cv2.LINE_AA)
+
         # Indicate where to place hand & make that place a region of interest
         cv2.rectangle(img, (100, 50), (550, 550), (255, 0, 0), 0)
         img_roi = img[50:550, 100:550] # Crop out rectangle w/ hand
@@ -90,12 +97,7 @@ def detect_hand():
                 finger_frames = 0  # Reset counter of frames
                 del(finger_count[:]) # Reset array
 
-            if finger_frames == 0:
-                print("Get ready for a round of rock-paper-scissors!")
-                print("Hold '0' fingers up for 'rock', '2' fingers for "
-                      " scissors, and '5' fingers for 'paper.' Think you "
-                      " can beat the computer?")
-                
+
             finger_frames += 1
 
         cv2.imshow('Image', img)
