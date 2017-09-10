@@ -1,4 +1,4 @@
-import cv2, numpy as np, math
+import cv2, numpy as np, math, random
 
 def detect_hand():
 
@@ -12,6 +12,7 @@ def detect_hand():
     text4 = "AI move:"
     text5 = "YOU WIN!"
     text6 = "YOU LOSE!"
+    text7 = "YOU TIED!"
     font = cv2.FONT_HERSHEY_DUPLEX
     color = (255, 153, 255)
 
@@ -20,6 +21,7 @@ def detect_hand():
     scissorim = cv2.imread("scissors.jpg")
     paperim = cv2.imread("paper.jpg")
     rock, paper, scissor = False, False, False
+    ai_rock, ai_paper, ai_scissor = False, False, False
 
     cap = cv2.VideoCapture(0) # Capture from primary webcam
 
@@ -114,6 +116,21 @@ def detect_hand():
                 else:
                     print("Invalid move\n\n")
 
+                ai_move = random.choice((0, 2, 5))
+
+                if ai_move == 0:
+                    ai_rock = True
+                    ai_paper = False
+                    ai_scissor = False
+                elif ai_move == 2:
+                    ai_scissor = True
+                    ai_rock = False
+                    ai_paper = False
+                else:
+                    ai_paper = True
+                    ai_rock = False
+                    ai_scissor = False
+
                 finger_frames = 0  # Reset counter of frames
                 del(finger_count[:]) # Reset array
 
@@ -126,6 +143,13 @@ def detect_hand():
             img[50:250, 950:1150] = paperim
         elif scissor == True:
              img[50:250, 950:1150] = scissorim
+
+        if ai_rock == True:
+            img[300:500, 950:1150] = rockim
+        elif ai_paper == True:
+            img[300:500, 950:1150] = paperim
+        elif ai_scissor == True:
+            img[300:500, 950:1150] = scissorim
 
         cv2.imshow('Image', img)
 
