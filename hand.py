@@ -8,6 +8,7 @@ def detect_hand():
     cap = cv2.VideoCapture(0) # Capture from primary webcam
     loop = 0
     while(True): # process individual frames of video
+
         ret, img = cap.read()
 
         # Indicate where to place hand & make that place a region of interest
@@ -72,18 +73,32 @@ def detect_hand():
             finger_count.append(count) # Add current count to list
 
             # Determine the actual number of fingers being held up
-            if finger_frames == 600: # Only operate every 'x' frames
+            if finger_frames == 1500: # Only operate every 'x' frames
                 arr = np.array(finger_count) # convert to numpy array
                 # Number of finger equals the most frequent value in array
                 # Idea is that correct number should appear most often
                 num_fingers = np.bincount(arr).argmax()
-                print(num_fingers)
+                if num_fingers == 0:
+                    print("Rock\n\n")
+                elif num_fingers == 2:
+                    print("Scissors\n\n")
+                elif num_fingers == 5:
+                    print("Paper\n\n")
+                else:
+                    print("Invalid move\n\n")
+
                 finger_frames = 0  # Reset counter of frames
                 del(finger_count[:]) # Reset array
 
+            if finger_frames == 0:
+                print("Get ready for a round of rock-paper-scissors!")
+                print("Hold '0' fingers up for 'rock', '2' fingers for "
+                      " scissors, and '5' fingers for 'paper.' Think you "
+                      " can beat the computer?")
+                
             finger_frames += 1
 
-        cv2.imshow('Image', img_roi)
+        cv2.imshow('Image', img)
 
         k = cv2.waitKey(30) & 0xFF
         if k == 27:
