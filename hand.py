@@ -29,6 +29,7 @@ def detect_hand():
 
         ret, img = cap.read()
 
+        # Draw info text on the screen
         cv2.putText(img, text, (270, 600), font, 0.8, color, 2, cv2.LINE_AA)
         cv2.putText(img, text2, (250, 650), font, 0.8, color, 2, cv2.LINE_AA)
         cv2.putText(img, text3, (700, 150), font, 1, color, 2, cv2.LINE_AA)
@@ -101,32 +102,32 @@ def detect_hand():
                 # Number of finger equals the most frequent value in array
                 # Idea is that correct number should appear most often
                 num_fingers = np.bincount(arr).argmax()
-                if num_fingers == 0:
+                if num_fingers == 0: # Rock move made
                     rock = True
                     paper = False
                     scissor = False
-                elif num_fingers == 2:
+                elif num_fingers == 2: # Scissor move made
                     scissor = True
                     rock = False
                     paper = False
-                elif num_fingers == 5:
+                elif num_fingers == 5: # Paper move made
                     paper = True
                     rock = False
                     scissor = False
                 else:
                     print("Invalid move\n\n")
 
-                ai_move = random.choice((0, 2, 5))
+                ai_move = random.choice((0, 2, 5)) # Get computer move
 
-                if ai_move == 0:
+                if ai_move == 0: # Computer move is rock
                     ai_rock = True
                     ai_paper = False
                     ai_scissor = False
-                elif ai_move == 2:
+                elif ai_move == 2: # Computer move is scissor
                     ai_scissor = True
                     ai_rock = False
                     ai_paper = False
-                else:
+                else: # Computer move is paper
                     ai_paper = True
                     ai_rock = False
                     ai_scissor = False
@@ -137,13 +138,15 @@ def detect_hand():
 
             finger_frames += 1
 
+        # Draw user move on screen using images
         if rock == True:
-            img[50:250, 950:1150] = rockim
+            img[50:250, 950:1150] = rockim  # Draw rock on screen
         elif paper == True:
-            img[50:250, 950:1150] = paperim
+            img[50:250, 950:1150] = paperim # Draw paper on screen
         elif scissor == True:
-             img[50:250, 950:1150] = scissorim
+             img[50:250, 950:1150] = scissorim # Draw scissor on screen
 
+        # Draw computer move on screen using images and result text
         if ai_rock == True:
             img[300:500, 950:1150] = rockim
             if rock == True: # Draw
