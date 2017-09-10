@@ -5,18 +5,32 @@ def detect_hand():
     finger_count = [] # Holds the number of fingers raised
     finger_frames = 0  # Counts the number of times loop has run
 
+    # Stuff needed for info/welcome messages to be printed to screen
+    text = "Welcome to Computer Vision Rock-Paper-Scissors!"
+    text2 = "Rock (0 fingers), paper (5 fingers), scissors (2 fingers)"
+    text3 = "Your move:"
+    text4 = "AI move:"
+    text5 = "YOU WIN!"
+    text6 = "YOU LOSE!"
+    font = cv2.FONT_HERSHEY_DUPLEX
+    color = (255, 153, 255)
+
+    # Image of rock/paper/scissors to be overlayed onto screen
+    rockim = cv2.imread("rock.jpg")
+    scissorim = cv2.imread("scissors.jpg")
+    paperim = cv2.imread("paper.jpg")
+    rock, paper, scissor = False, False, False
+
     cap = cv2.VideoCapture(0) # Capture from primary webcam
-    loop = 0
+
     while(True): # process individual frames of video
 
         ret, img = cap.read()
 
-        text = "Welcome to Computer Vision Rock-Paper-Scissors!"
-        text2 = "Rock (0 fingers), paper (5 fingers), scissors (2 fingers)"
-        font = cv2.FONT_HERSHEY_DUPLEX
-        color = (255, 153, 255)
         cv2.putText(img, text, (270, 600), font, 0.8, color, 2, cv2.LINE_AA)
         cv2.putText(img, text2, (250, 650), font, 0.8, color, 2, cv2.LINE_AA)
+        cv2.putText(img, text3, (700, 150), font, 1, color, 2, cv2.LINE_AA)
+        cv2.putText(img, text4, (700, 400), font, 1, color, 2, cv2.LINE_AA)
 
         # Indicate where to place hand & make that place a region of interest
         cv2.rectangle(img, (100, 50), (550, 550), (255, 0, 0), 0)
@@ -86,11 +100,17 @@ def detect_hand():
                 # Idea is that correct number should appear most often
                 num_fingers = np.bincount(arr).argmax()
                 if num_fingers == 0:
-                    print("Rock\n\n")
+                    rock = True
+                    paper = False
+                    scissor = False
                 elif num_fingers == 2:
-                    print("Scissors\n\n")
+                    scissor = True
+                    rock = False
+                    paper = False
                 elif num_fingers == 5:
-                    print("Paper\n\n")
+                    paper = True
+                    rock = False
+                    scissor = False
                 else:
                     print("Invalid move\n\n")
 
@@ -99,6 +119,13 @@ def detect_hand():
 
 
             finger_frames += 1
+
+        if rock == True:
+            img[50:250, 950:1150] = rockim
+        elif paper == True:
+            img[50:250, 950:1150] = paperim
+        elif scissor == True:
+             img[50:250, 950:1150] = scissorim
 
         cv2.imshow('Image', img)
 
